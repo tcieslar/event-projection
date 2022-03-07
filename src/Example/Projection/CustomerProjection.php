@@ -26,15 +26,17 @@ class CustomerProjection implements ProjectionInterface
         }
 
         if ($event instanceof CustomerCredentialSetEvent) {
+            /** @var Customer $customer */
             $customer = $this->projectionStorage->get(Customer::class, $event->getCustomerId()->toString());
-            $customer->name = $event->getName();
+            $customer->setName($event->getName());
             $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
         }
 
         if ($event instanceof OrderAddedEvent) {
             $customer = $this->projectionStorage->get(Customer::class, $event->getCustomerId()->toString());
-            $customer->orders ??= [];
-            $customer->orders[] = $event->getOrderDescription();
+            $orders = $customer->getOrders();
+            $orders[] = $event->getOrderDescription();
+            $customer->setOrders($orders);
             $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
         }
     }

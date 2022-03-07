@@ -32,8 +32,4 @@ abstract class DomainEventExample implements Event
     {
         return $this->occurredAt;
     }
-
-    abstract public function normalize(): array;
-
-    abstract public static function denormalize(array $data): static;
 }

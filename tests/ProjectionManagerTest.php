@@ -56,13 +56,12 @@ class ProjectionManagerTest extends TestCase
         $customer = $projectionStorage->get(Customer::class, $customerId->toString());
 
         $this->assertInstanceOf(Customer::class, $customer);
-//        $this->assertInstanceOf(\DateTimeImmutable::class, $customer->createdAt);
-//        $this->assertEquals($customerId->toString(), $customer?->customerId->toString());
-//        $this->assertEquals('test 2', $customer->name);
-//        $this->assertEquals([
-//            'to jest zamównienie',
-//            'to jest zamównienie 2'
-//        ],
-//            $customer->orders);
+        $this->assertEquals($customerId->toString(), $customer->getCustomerId()->toString());
+        $this->assertEquals('test 2', $customer->getName());
+        $this->assertEquals([
+            'to jest zamównienie',
+            'to jest zamównienie 2'
+        ],
+            $customer->getOrders());
     }
 }

@@ -5,11 +5,10 @@ namespace Tcieslar\EventProjection;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ElasticSearchProjectionStorage implements ProjectionStorageInterface
 {
-    private SerializerInterface $serializer;
+    private Serializer $serializer;
     private Client $client;
 
     public function __construct(Serializer $serializer)
@@ -34,7 +33,6 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             $response,
             $viewClass
         );
-
     }
 
     public function store(mixed $view, string $viewId): void
