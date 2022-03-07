@@ -1,0 +1,40 @@
+{
+  "name": "tcieslar/event-projection",
+  "type": "library",
+  "description": "Event projection manager.",
+  "keywords": [
+    "read model",
+    "views",
+    "projecting events"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tomasz Cieślar",
+      "email": "tomaszcieslar@interia.pl"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "tcieslar/event-sourcing": "^0.1",
+    "symfony/serializer": "^6.0",
+    "elasticsearch/elasticsearch": "^7.0",
+    "symfony/property-access": "^6.0",
+    "doctrine/annotations": "^1.13",
+    "symfony/property-info": "^6.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "vimeo/psalm": "^4.21"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tcieslar\\EventProjection\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tcieslar\\EventProjection\\Tests\\": "tests"
+    }
+  }
+}
