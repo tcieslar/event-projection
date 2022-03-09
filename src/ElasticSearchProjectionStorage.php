@@ -11,11 +11,11 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
     private Serializer $serializer;
     private Client $client;
 
-    public function __construct(Serializer $serializer)
+    public function __construct(string $host, string $port, Serializer $serializer)
     {
         $this->serializer = $serializer;
         $this->client = ClientBuilder::create()
-            ->setHosts(['localhost:9200'])
+            ->setHosts([$host . ':' . $port])
             ->build();
     }
 
