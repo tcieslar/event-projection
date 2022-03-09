@@ -20,10 +20,7 @@ class ElasticSearchProjectionStorageTest extends TestCase
 {
     public function testFirst(): void
     {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(
-            new AnnotationReader()
-        ));
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $encoders = [new JsonEncoder()];
         $normalizers = [
             new DateTimeNormalizer(),
             new PropertyNormalizer(
@@ -31,6 +28,8 @@ class ElasticSearchProjectionStorageTest extends TestCase
             )];
 
         $storage = new ElasticSearchProjectionStorage(
+            'localhost',
+            '9200',
             new Serializer(
                 $normalizers, $encoders
             )
