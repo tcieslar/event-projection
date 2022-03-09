@@ -47,5 +47,6 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             'body' => $serialized
         ];
         $response = $this->client->index($params);
+        var_dump($response);
     }
 }
