@@ -17,6 +17,7 @@ class ProjectionManager
      */
     public function __construct(iterable $projections)
     {
+        $this->projections = [];
         foreach ($projections as $projection) {
             $this->projections[] = $projection;
         }
