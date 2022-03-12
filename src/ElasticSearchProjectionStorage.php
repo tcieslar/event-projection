@@ -4,6 +4,10 @@ namespace Tcieslar\EventProjection;
 
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class ElasticSearchProjectionStorage implements ProjectionStorageInterface
@@ -11,9 +15,18 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
     private Serializer $serializer;
     private Client $client;
 
-    public function __construct(string $host, string $port, Serializer $serializer)
+    public function __construct(string $host, string $port)
     {
-        $this->serializer = $serializer;
+        $encoders = [new JsonEncoder()];
+        $normalizers = [
+            new DateTimeNormalizer(),
+            new PropertyNormalizer(
+                null, null, new ReflectionExtractor()
+            )];
+        $this->serializer = new Serializer(
+            $normalizers, $encoders
+        );
+
         $this->client = ClientBuilder::create()
             ->setHosts([$host . ':' . $port])
             ->build();
