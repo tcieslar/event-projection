@@ -15,7 +15,20 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
     private Serializer $serializer;
     private Client $client;
 
-    public function __construct(string $host, string $port)
+    public function __construct(string $host, string $port, ?Serializer $serializer = null)
+    {
+        $this->client = ClientBuilder::create()
+            ->setHosts([$host . ':' . $port])
+            ->build();
+
+        if ($serializer) {
+            $this->serializer = $serializer;
+            return;
+        }
+        $this->symfonySerializerFactory();
+    }
+
+    private function symfonySerializerFactory(): void
     {
         $encoders = [new JsonEncoder()];
         $normalizers = [
@@ -26,10 +39,6 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         $this->serializer = new Serializer(
             $normalizers, $encoders
         );
-
-        $this->client = ClientBuilder::create()
-            ->setHosts([$host . ':' . $port])
-            ->build();
     }
 
     public function get(string $viewClass, string $id): mixed
