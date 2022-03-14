@@ -1,6 +1,6 @@
 <?php
 
-namespace Tcieslar\EventProjection\Example\Aggregate;
+namespace Tcieslar\EventProjection\Tests\Example\Aggregate;
 
 use Tcieslar\EventSourcing\Uuid;
 

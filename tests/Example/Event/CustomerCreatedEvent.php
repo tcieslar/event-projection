@@ -1,15 +1,14 @@
 <?php
 
-namespace Tcieslar\EventProjection\Example\Event;
+namespace Tcieslar\EventProjection\Tests\Example\Event;
 
-use Tcieslar\EventProjection\Example\Aggregate\CustomerId;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\CustomerId;
 use Tcieslar\EventSourcing\Uuid;
 
-class CustomerCredentialSetEvent extends DomainEventExample
+class CustomerCreatedEvent extends DomainEventExample
 {
     public function __construct(
         private CustomerId  $customerId,
-        private string      $name,
         ?Uuid               $uuid = null,
         ?\DateTimeImmutable $occurredAt = null
     )
@@ -20,14 +19,8 @@ class CustomerCredentialSetEvent extends DomainEventExample
         );
     }
 
-
     public function getCustomerId(): CustomerId
     {
         return $this->customerId;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
 }

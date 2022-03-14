@@ -4,6 +4,10 @@ namespace Tcieslar\EventProjection;
 
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class ElasticSearchProjectionStorage implements ProjectionStorageInterface
@@ -11,12 +15,30 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
     private Serializer $serializer;
     private Client $client;
 
-    public function __construct(string $host, string $port, Serializer $serializer)
+    public function __construct(string $host, string $port, ?Serializer $serializer = null)
     {
-        $this->serializer = $serializer;
         $this->client = ClientBuilder::create()
             ->setHosts([$host . ':' . $port])
             ->build();
+
+        if ($serializer) {
+            $this->serializer = $serializer;
+            return;
+        }
+        $this->symfonySerializerFactory();
+    }
+
+    private function symfonySerializerFactory(): void
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizers = [
+            new DateTimeNormalizer(),
+            new PropertyNormalizer(
+                null, null, new ReflectionExtractor()
+            )];
+        $this->serializer = new Serializer(
+            $normalizers, $encoders
+        );
     }
 
     public function get(string $viewClass, string $id): mixed
@@ -47,6 +69,5 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             'body' => $serialized
         ];
         $response = $this->client->index($params);
-        var_dump($response);
     }
 }

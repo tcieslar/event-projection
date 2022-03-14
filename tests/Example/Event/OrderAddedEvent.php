@@ -1,9 +1,10 @@
 <?php
 
-namespace Tcieslar\EventProjection\Example\Event;
+namespace Tcieslar\EventProjection\Tests\Example\Event;
 
-use Tcieslar\EventProjection\Example\Aggregate\CustomerId;
-use Tcieslar\EventProjection\Example\Aggregate\OrderId;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\CustomerId;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\OrderId;
+use Tcieslar\EventProjection\Tests\Example\Event\DomainEventExample;
 use Tcieslar\EventSourcing\Uuid;
 
 class OrderAddedEvent extends DomainEventExample

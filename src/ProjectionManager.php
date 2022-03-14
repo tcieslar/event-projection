@@ -15,14 +15,17 @@ class ProjectionManager
     /**
      * @param array<ProjectionInterface> $projections
      */
-    public function __construct(array $projections)
+    public function __construct(iterable $projections)
     {
-        $this->projections = $projections;
+        $this->projections = [];
+        foreach ($projections as $projection) {
+            $this->projections[] = $projection;
+        }
     }
 
     public function projectViewsByEventCollection(EventCollection $eventCollection): void
     {
-        foreach ($eventCollection  as $event) {
+        foreach ($eventCollection as $event) {
             $this->projectViews($event);
         }
     }
