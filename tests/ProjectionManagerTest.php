@@ -3,13 +3,13 @@
 namespace Tcieslar\EventProjection\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Tcieslar\EventProjection\Example\Aggregate\CustomerId;
-use Tcieslar\EventProjection\Example\Aggregate\OrderId;
-use Tcieslar\EventProjection\Example\Event\CustomerCreatedEvent;
-use Tcieslar\EventProjection\Example\Event\CustomerCredentialSetEvent;
-use Tcieslar\EventProjection\Example\Event\OrderAddedEvent;
-use Tcieslar\EventProjection\Example\Projection\Customer;
-use Tcieslar\EventProjection\Example\Projection\CustomerProjection;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\CustomerId;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\OrderId;
+use Tcieslar\EventProjection\Tests\Example\Event\CustomerCreatedEvent;
+use Tcieslar\EventProjection\Tests\Example\Event\CustomerCredentialSetEvent;
+use Tcieslar\EventProjection\Tests\Example\Event\OrderAddedEvent;
+use Tcieslar\EventProjection\Tests\Example\Projection\Customer;
+use Tcieslar\EventProjection\Tests\Example\Projection\CustomerProjection;
 use Tcieslar\EventProjection\InMemoryProjectionStorage;
 use Tcieslar\EventProjection\ProjectionManager;
 

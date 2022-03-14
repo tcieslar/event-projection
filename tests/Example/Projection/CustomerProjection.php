@@ -1,12 +1,13 @@
 <?php
 
-namespace Tcieslar\EventProjection\Example\Projection;
+namespace Tcieslar\EventProjection\Tests\Example\Projection;
 
-use Tcieslar\EventProjection\Example\Event\CustomerCreatedEvent;
-use Tcieslar\EventProjection\Example\Event\CustomerCredentialSetEvent;
-use Tcieslar\EventProjection\Example\Event\OrderAddedEvent;
+use Tcieslar\EventProjection\Tests\Example\Event\CustomerCreatedEvent;
+use Tcieslar\EventProjection\Tests\Example\Event\CustomerCredentialSetEvent;
+use Tcieslar\EventProjection\Tests\Example\Event\OrderAddedEvent;
 use Tcieslar\EventProjection\ProjectionInterface;
 use Tcieslar\EventProjection\ProjectionStorageInterface;
+use Tcieslar\EventProjection\Tests\Example\Projection\Customer;
 use Tcieslar\EventSourcing\Event;
 
 class CustomerProjection implements ProjectionInterface
@@ -41,9 +42,9 @@ class CustomerProjection implements ProjectionInterface
         }
     }
 
-    public function consumeEvent(Event $eventType): bool
+    public function consumeEvent(Event $event): bool
     {
-        return in_array(get_class($eventType),
+        return in_array(get_class($event),
             [
                 CustomerCreatedEvent::class,
                 CustomerCredentialSetEvent::class,

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tcieslar\EventProjection\Example\Event;
+namespace Tcieslar\EventProjection\Tests\Example\Event;
 
 use DateTimeImmutable;
 use Tcieslar\EventSourcing\Event;
@@ -17,10 +17,14 @@ abstract class DomainEventExample implements Event
     )
     {
         $this->uuid = $uuid ?? Uuid::random();
-        $this->occurredAt = $occurredAt ?? DateTimeImmutable::createFromFormat(
-                DATE_RFC3339,
-                (new \DateTimeImmutable())->format(DATE_RFC3339)
-            );
+        $dateTime = DateTimeImmutable::createFromFormat(
+            DATE_RFC3339,
+            (new \DateTimeImmutable())->format(DATE_RFC3339)
+        );
+        if (false === $dateTime) {
+            throw new \RuntimeException('Time generation error.');
+        }
+        $this->occurredAt = $occurredAt ?? $dateTime;
     }
 
     public function getEventId(): Uuid

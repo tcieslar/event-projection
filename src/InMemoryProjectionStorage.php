@@ -6,9 +6,9 @@ class InMemoryProjectionStorage implements ProjectionStorageInterface
 {
     private array $views = [];
 
-    public function get(string $viewClass, string $viewId): mixed
+    public function get(string $viewClass, string $id): mixed
     {
-        return $this->views[$viewClass][$viewId] ?? null;
+        return $this->views[$viewClass][$id] ?? null;
     }
 
     public function store(mixed $view, string $viewId): void

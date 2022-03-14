@@ -1,9 +1,9 @@
 <?php
 
-namespace Tcieslar\EventProjection\Example\Projection;
+namespace Tcieslar\EventProjection\Tests\Example\Projection;
 
 use DateTimeImmutable;
-use Tcieslar\EventProjection\Example\Aggregate\CustomerId;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\CustomerId;
 
 class Customer
 {

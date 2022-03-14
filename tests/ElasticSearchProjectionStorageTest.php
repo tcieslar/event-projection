@@ -2,19 +2,15 @@
 
 namespace Tcieslar\EventProjection\Tests;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Tcieslar\EventProjection\ElasticSearchProjectionStorage;
 use PHPUnit\Framework\TestCase;
-use Tcieslar\EventProjection\Example\Aggregate\CustomerId;
-use Tcieslar\EventProjection\Example\Projection\Customer;
+use Tcieslar\EventProjection\Tests\Example\Aggregate\CustomerId;
+use Tcieslar\EventProjection\Tests\Example\Projection\Customer;
 
 class ElasticSearchProjectionStorageTest extends TestCase
 {
