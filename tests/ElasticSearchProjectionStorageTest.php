@@ -44,7 +44,9 @@ class ElasticSearchProjectionStorageTest extends TestCase
         );
 
         $customer2 = $storage->get(Customer::class, $customerId->toString());
-
         $this->assertEquals($customer2, $customer);
+
+        $result = $storage->getAll(Customer::class);
+        $this->assertGreaterThan(0, $result['count']);
     }
 }

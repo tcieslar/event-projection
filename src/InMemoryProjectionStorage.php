@@ -16,4 +16,9 @@ class InMemoryProjectionStorage implements ProjectionStorageInterface
         $this->views[get_class($view)] ??= [];
         $this->views[get_class($view)][$viewId] = $view;
     }
+
+    public function getAll(string $viewClass, int $page = 1, int $pageLimit = 10): array
+    {
+        return array_slice($this->views, ($page - 1) * $pageLimit, $pageLimit);
+    }
 }

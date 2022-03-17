@@ -43,8 +43,7 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
 
     public function get(string $viewClass, string $id): mixed
     {
-        $array = explode('\\', $viewClass);
-        $indexName = mb_strtolower($array[count($array) - 1]);
+        $indexName = $this->getIndexName($viewClass);
         $params = [
             'index' => $indexName,
             'id' => $id
@@ -59,8 +58,7 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
 
     public function store(mixed $view, string $viewId): void
     {
-        $array = explode('\\', get_class($view));
-        $indexName = mb_strtolower($array[count($array) - 1]);
+        $indexName = $this->getIndexName(get_class($view));
         $serialized = $this->serializer->serialize($view, 'json');
 
         $params = [
@@ -69,5 +67,37 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             'body' => $serialized
         ];
         $response = $this->client->index($params);
+    }
+
+    public function getAll(string $viewClass, int $page = 1, int $pageLimit = 10): array
+    {
+        $params = [
+            'index' => $this->getIndexName($viewClass),
+            'body' => [
+                'from' => ($page - 1) * $pageLimit,
+                'size' => $pageLimit
+            ]
+        ];
+
+        $response = $this->client->search($params);
+        $views = [];
+
+        foreach ($response['hits']['hits'] as $item) {
+            $views[] = $this->serializer->denormalize(
+                $item['_source'],
+                $viewClass
+            );
+        }
+
+        return [
+            'count' => $response['hits']['total'],
+            'views' => $views
+        ];
+    }
+
+    private function getIndexName(string $viewClass): string|array|null|false
+    {
+        $array = explode('\\', $viewClass);
+        return mb_strtolower(array_pop($array));
     }
 }

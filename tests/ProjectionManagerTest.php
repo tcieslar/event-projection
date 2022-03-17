@@ -63,5 +63,9 @@ class ProjectionManagerTest extends TestCase
             'to jest zamównienie 2'
         ],
             $customer->getOrders());
+
+        $collection = $projectionStorage->getAll(Customer::class);
+
+        $this->assertCount(1, $collection);
     }
 }
