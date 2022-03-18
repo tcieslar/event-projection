@@ -28,4 +28,9 @@ class InMemoryProjectionStorage implements ProjectionStorageInterface
             unset($this->views[$viewClass]);
         }
     }
+
+    public function prepare(string $viewClass): void
+    {
+        $this->views[$viewClass] = [];
+    }
 }

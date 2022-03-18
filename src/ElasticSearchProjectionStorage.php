@@ -14,9 +14,17 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
 {
     private Serializer $serializer;
     private Client $client;
+    /** @var ElasticSearchIndexSettingsProviderInterface[] */
+    private array $settingsProviders;
 
-    public function __construct(string $host, string $port, ?Serializer $serializer = null)
+    public function __construct(
+        string      $host,
+        string      $port,
+        array       $settingsProviders,
+        ?Serializer $serializer = null
+    )
     {
+        $this->settingsProviders = $settingsProviders;
         $this->client = ClientBuilder::create()
             ->setHosts([$host . ':' . $port])
             ->build();
@@ -26,6 +34,33 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             return;
         }
         $this->symfonySerializerFactory();
+    }
+
+    public function search(array $context): array
+    {
+        return [];
+    }
+
+    public function prepare(string $viewClass): void
+    {
+        $selectedProvider = null;
+        foreach ($this->settingsProviders as $provider) {
+            if ($provider->supportedView() === $viewClass) {
+                $selectedProvider = $provider;
+                break;
+            }
+        }
+
+        if(!$selectedProvider) {
+            throw  new \InvalidArgumentException('Settings provider not found.');
+        }
+
+        $params = [
+            'index' => $this->getIndexName($viewClass),
+            'body' => $selectedProvider->getSettings()
+        ];
+
+        $response = $this->client->indices()->create($params);
     }
 
     private function symfonySerializerFactory(): void

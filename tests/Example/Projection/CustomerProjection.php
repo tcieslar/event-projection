@@ -7,7 +7,6 @@ use Tcieslar\EventProjection\Tests\Example\Event\CustomerCredentialSetEvent;
 use Tcieslar\EventProjection\Tests\Example\Event\OrderAddedEvent;
 use Tcieslar\EventProjection\ProjectionInterface;
 use Tcieslar\EventProjection\ProjectionStorageInterface;
-use Tcieslar\EventProjection\Tests\Example\Projection\Customer;
 use Tcieslar\EventSourcing\Event;
 
 class CustomerProjection implements ProjectionInterface
@@ -42,7 +41,7 @@ class CustomerProjection implements ProjectionInterface
         }
     }
 
-    public function consumeEvent(Event $event): bool
+    public function supportsEvent(Event $event): bool
     {
         return in_array(get_class($event),
             [
@@ -52,13 +51,8 @@ class CustomerProjection implements ProjectionInterface
             ]);
     }
 
-    public function processedEvents(): iterable
+    public function processedView(): string
     {
-        // TODO: Implement processedEvents() method.
-    }
-
-    public function processedViews(): iterable
-    {
-        // TODO: Implement processedViews() method.
+        return Customer::class;
     }
 }

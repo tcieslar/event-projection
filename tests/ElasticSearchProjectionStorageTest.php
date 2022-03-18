@@ -11,6 +11,7 @@ use Tcieslar\EventProjection\ElasticSearchProjectionStorage;
 use PHPUnit\Framework\TestCase;
 use Tcieslar\EventProjection\Tests\Example\Aggregate\CustomerId;
 use Tcieslar\EventProjection\Tests\Example\Projection\Customer;
+use Tcieslar\EventProjection\Tests\Example\Query\CustomerQuery;
 
 class ElasticSearchProjectionStorageTest extends TestCase
 {
@@ -26,10 +27,19 @@ class ElasticSearchProjectionStorageTest extends TestCase
         $storage = new ElasticSearchProjectionStorage(
             'localhost',
             '9200',
+            [
+                new CustomerQuery()
+            ],
             new Serializer(
                 $normalizers, $encoders
             )
         );
+        try {
+            $storage->delete(Customer::class);
+        }catch (\Throwable $exception) {
+
+        }
+        $storage->prepare(Customer::class);
 
         $customerId = CustomerId::create();
         $customer = new Customer(
