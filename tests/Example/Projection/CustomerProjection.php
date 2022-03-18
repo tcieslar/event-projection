@@ -51,4 +51,14 @@ class CustomerProjection implements ProjectionInterface
                 OrderAddedEvent::class
             ]);
     }
+
+    public function processedEvents(): iterable
+    {
+        // TODO: Implement processedEvents() method.
+    }
+
+    public function processedViews(): iterable
+    {
+        // TODO: Implement processedViews() method.
+    }
 }

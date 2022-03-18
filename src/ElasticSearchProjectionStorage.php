@@ -95,6 +95,14 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         ];
     }
 
+    public function delete(string $viewClass): void
+    {
+        $deleteParams = [
+            'index' => $this->getIndexName($viewClass)
+        ];
+        $response = $this->client->indices()->delete($deleteParams);
+    }
+
     private function getIndexName(string $viewClass): string|array|null|false
     {
         $array = explode('\\', $viewClass);

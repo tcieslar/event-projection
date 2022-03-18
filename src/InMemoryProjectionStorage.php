@@ -21,4 +21,11 @@ class InMemoryProjectionStorage implements ProjectionStorageInterface
     {
         return array_slice($this->views, ($page - 1) * $pageLimit, $pageLimit);
     }
+
+    public function delete(string $viewClass): void
+    {
+        if(isset($this->views[$viewClass])) {
+            unset($this->views[$viewClass]);
+        }
+    }
 }
