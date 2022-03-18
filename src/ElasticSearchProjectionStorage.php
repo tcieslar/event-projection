@@ -20,11 +20,15 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
     public function __construct(
         string      $host,
         string      $port,
-        array       $settingsProviders,
+        iterable    $settingsProviders,
         ?Serializer $serializer = null
     )
     {
-        $this->settingsProviders = $settingsProviders;
+        $this->settingsProviders = [];
+        foreach ($settingsProviders as $settingsProvider) {
+            $this->settingsProviders[] = $settingsProvider;
+        }
+
         $this->client = ClientBuilder::create()
             ->setHosts([$host . ':' . $port])
             ->build();
@@ -51,7 +55,7 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             }
         }
 
-        if(!$selectedProvider) {
+        if (!$selectedProvider) {
             throw  new \InvalidArgumentException('Settings provider not found.');
         }
 
