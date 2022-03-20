@@ -27,7 +27,7 @@ class ProjectionManager
     {
         $classes = [];
         foreach ($this->projections as $projection) {
-            $this->$classes[] = $projection->processedView();
+            $classes[] = $projection->processedView();
         }
 
         return $classes;
