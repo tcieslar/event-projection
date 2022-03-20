@@ -23,6 +23,16 @@ class ProjectionManager
         }
     }
 
+    public function getProjecitonViewClasses(): array
+    {
+        $classes = [];
+        foreach ($this->projections as $projection) {
+            $this->$classes[] = $projection->processedView();
+        }
+
+        return $classes;
+    }
+
     public function projectViewsByEventCollection(EventCollection $eventCollection): void
     {
         foreach ($eventCollection as $event) {
