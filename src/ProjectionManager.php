@@ -33,16 +33,21 @@ class ProjectionManager
         return $classes;
     }
 
-    public function projectViewsByEventCollection(EventCollection $eventCollection): void
+    public function projectViewsByEventCollection(EventCollection $eventCollection, ?string $selectedViewClass = null): void
     {
         foreach ($eventCollection as $event) {
-            $this->projectViews($event);
+            $this->projectViews($event, $selectedViewClass);
         }
     }
 
-    public function projectViews(Event $event): void
+    public function projectViews(Event $event, ?string $selectedViewClass = null): void
     {
         foreach ($this->projections as $projection) {
+            if ($selectedViewClass &&
+                $projection->processedView() !== $selectedViewClass) {
+                continue;
+            }
+
             if (!$projection->supportsEvent($event)) {
                 continue;
             }
