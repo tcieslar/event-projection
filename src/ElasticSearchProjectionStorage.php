@@ -134,7 +134,7 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         $start = round(microtime(true) * 1000);
         $response = $this->client->search($params);
         $stop = round(microtime(true) * 1000);
-        $this->logger->debug('Elastic Search - search in ' . $indexName . ' (' . ($stop - $start) . ') ms.');
+        $this->logger->debug('Elastic Search - search in ' . $indexName . ' (' . ($stop - $start) . ' ms).');
         $views = [];
 
         foreach ($response['hits']['hits'] as $item) {
