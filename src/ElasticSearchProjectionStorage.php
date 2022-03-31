@@ -2,7 +2,6 @@
 
 namespace Tcieslar\EventProjection;
 
-
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Psr\Log\LoggerInterface;
@@ -132,9 +131,10 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             ]
         ];
 
-        $this->logger->debug('Elastic Search - search in ' . $indexName);
-
+        $start = round(microtime(true) * 1000);
         $response = $this->client->search($params);
+        $stop = round(microtime(true) * 1000);
+        $this->logger->debug('Elastic Search - search in ' . $indexName . ' (' . ($stop - $start) . ') ms.');
         $views = [];
 
         foreach ($response['hits']['hits'] as $item) {
