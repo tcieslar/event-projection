@@ -2,8 +2,10 @@
 
 namespace Tcieslar\EventProjection;
 
+
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -16,12 +18,14 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
     private Client $client;
     /** @var ElasticSearchIndexSettingsProviderInterface[] */
     private array $settingsProviders;
+    private LoggerInterface $logger;
 
     public function __construct(
-        string      $host,
-        string      $port,
-        iterable    $settingsProviders,
-        ?Serializer $serializer = null
+        string          $host,
+        string          $port,
+        iterable        $settingsProviders,
+        LoggerInterface $logger,
+        ?Serializer     $serializer = null
     )
     {
         $this->settingsProviders = [];
@@ -32,6 +36,8 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         $this->client = ClientBuilder::create()
             ->setHosts([$host . ':' . $port])
             ->build();
+
+        $this->logger = $logger;
 
         if ($serializer) {
             $this->serializer = $serializer;
@@ -59,12 +65,15 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             throw  new \InvalidArgumentException('Settings provider not found.');
         }
 
+        $indexName = $this->getIndexName($viewClass);
         $params = [
-            'index' => $this->getIndexName($viewClass),
+            'index' => $indexName,
             'body' => $selectedProvider->getSettings()
         ];
 
-        $response = $this->client->indices()->create($params);
+        $this->client->indices()->create($params);
+
+        $this->logger->debug('Elastic Search - index settings for ' . $indexName);
     }
 
     private function symfonySerializerFactory(): void
@@ -89,6 +98,8 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         ];
 
         $response = $this->client->getSource($params);
+        $this->logger->debug('Elastic Search - get from ' . $indexName . ', id ' . $id);
+
         return $this->serializer->denormalize(
             $response,
             $viewClass
@@ -105,18 +116,23 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             'id' => $viewId,
             'body' => $serialized
         ];
-        $response = $this->client->index($params);
+        $this->client->index($params);
+
+        $this->logger->debug('Elastic Search - store to ' . $indexName . ', id ' . $viewId);
     }
 
     public function getAll(string $viewClass, int $page = 1, int $pageLimit = 10): array
     {
+        $indexName = $this->getIndexName($viewClass);
         $params = [
-            'index' => $this->getIndexName($viewClass),
+            'index' => $indexName,
             'body' => [
                 'from' => ($page - 1) * $pageLimit,
                 'size' => $pageLimit
             ]
         ];
+
+        $this->logger->debug('Elastic Search - search in ' . $indexName);
 
         $response = $this->client->search($params);
         $views = [];
@@ -136,10 +152,13 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
 
     public function delete(string $viewClass): void
     {
+        $indexName = $this->getIndexName($viewClass);
         $deleteParams = [
-            'index' => $this->getIndexName($viewClass)
+            'index' => $indexName
         ];
-        $response = $this->client->indices()->delete($deleteParams);
+        $this->client->indices()->delete($deleteParams);
+
+        $this->logger->debug('Elastic Search - delete from ' . $indexName);
     }
 
     private function getIndexName(string $viewClass): string|array|null|false

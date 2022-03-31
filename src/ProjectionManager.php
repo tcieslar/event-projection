@@ -23,6 +23,12 @@ class ProjectionManager
         }
     }
 
+    public function initializeProjection(string $viewClass): void
+    {
+//        $this->projectionStorage->delete($viewClass);
+//        $this->projectionStorage->prepare($viewClass);
+    }
+
     public function getProjecitonViewClasses(): array
     {
         $classes = [];
@@ -33,10 +39,11 @@ class ProjectionManager
         return $classes;
     }
 
-    public function projectViewsByEventCollection(EventCollection $eventCollection, ?string $selectedViewClass = null): void
+    // selectedViewClass only in projectView
+    public function projectViewsByEventCollection(EventCollection $eventCollection): void
     {
         foreach ($eventCollection as $event) {
-            $this->projectViews($event, $selectedViewClass);
+            $this->projectViews($event);
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace Tcieslar\EventProjection\Tests;
 
+use Psr\Log\NullLogger;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -30,6 +31,7 @@ class ElasticSearchProjectionStorageTest extends TestCase
             [
                 new CustomerQuery()
             ],
+            new NullLogger(),
             new Serializer(
                 $normalizers, $encoders
             )
