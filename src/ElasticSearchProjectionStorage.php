@@ -145,7 +145,7 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         }
 
         return [
-            'count' => $response['hits']['total'],
+            'count' => $response['hits']['total']['value'],
             'views' => $views
         ];
     }
