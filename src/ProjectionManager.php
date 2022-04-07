@@ -2,7 +2,9 @@
 
 namespace Tcieslar\EventProjection;
 
+use Error;
 use Tcieslar\EventSourcing\Event;
+use Tcieslar\EventSourcing\EventAggregateMismatchException;
 use Tcieslar\EventSourcing\EventCollection;
 
 class ProjectionManager
@@ -23,13 +25,7 @@ class ProjectionManager
         }
     }
 
-    public function initializeProjection(string $viewClass): void
-    {
-//        $this->projectionStorage->delete($viewClass);
-//        $this->projectionStorage->prepare($viewClass);
-    }
-
-    public function getProjecitonViewClasses(): array
+    public function getProjectionViewClasses(): array
     {
         $classes = [];
         foreach ($this->projections as $projection) {
@@ -58,7 +54,18 @@ class ProjectionManager
             if (!$projection->supportsEvent($event)) {
                 continue;
             }
-            $projection->handleEvent($event);
+
+            $array = explode('\\', get_class($event));
+            $name = 'when' . $array[count($array) - 1];
+            try {
+                $projection->$name($event);
+            } catch (Error $error) {
+                throw new ProjectorEventHandlerNotFoundException(
+                    $projection->processedView(),
+                    $event,
+                    $error);
+            }
+
         }
     }
 }

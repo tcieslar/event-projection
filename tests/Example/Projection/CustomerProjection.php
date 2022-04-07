@@ -18,27 +18,27 @@ class CustomerProjection implements ProjectionInterface
         $this->projectionStorage = $projectionStorage;
     }
 
-    public function handleEvent(Event $event): void
+    public function whenCustomerCreatedEvent(CustomerCreatedEvent $event): void
     {
-        if ($event instanceof CustomerCreatedEvent) {
-            $customer = new Customer($event->getCustomerId(), $event->getOccurredAt());
-            $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
-        }
+        $customer = new Customer($event->getCustomerId(), $event->getOccurredAt());
+        $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
+    }
 
-        if ($event instanceof CustomerCredentialSetEvent) {
-            /** @var Customer $customer */
-            $customer = $this->projectionStorage->get(Customer::class, $event->getCustomerId()->toString());
-            $customer->setName($event->getName());
-            $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
-        }
+    public function whenCustomerCredentialSetEvent(CustomerCredentialSetEvent $event): void
+    {
+        /** @var Customer $customer */
+        $customer = $this->projectionStorage->get(Customer::class, $event->getCustomerId()->toString());
+        $customer->setName($event->getName());
+        $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
+    }
 
-        if ($event instanceof OrderAddedEvent) {
-            $customer = $this->projectionStorage->get(Customer::class, $event->getCustomerId()->toString());
-            $orders = $customer->getOrders();
-            $orders[] = $event->getOrderDescription();
-            $customer->setOrders($orders);
-            $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
-        }
+    public function whenOrderAddedEvent(OrderAddedEvent $event): void
+    {
+        $customer = $this->projectionStorage->get(Customer::class, $event->getCustomerId()->toString());
+        $orders = $customer->getOrders();
+        $orders[] = $event->getOrderDescription();
+        $customer->setOrders($orders);
+        $this->projectionStorage->store($customer, $event->getCustomerId()->toString());
     }
 
     public function supportsEvent(Event $event): bool
