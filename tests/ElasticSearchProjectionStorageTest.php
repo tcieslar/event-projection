@@ -37,7 +37,7 @@ class ElasticSearchProjectionStorageTest extends TestCase
             )
         );
 
-        $storage->delete(Customer::class);
+        $storage->deleteAll(Customer::class);
         $storage->prepare(Customer::class);
 
         $customerId = CustomerId::create();

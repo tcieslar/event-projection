@@ -22,9 +22,9 @@ class InMemoryProjectionStorage implements ProjectionStorageInterface
         return array_slice($this->views[$viewClass], ($page - 1) * $pageLimit, $pageLimit);
     }
 
-    public function delete(string $viewClass): void
+    public function deleteAll(string $viewClass): void
     {
-        if(isset($this->views[$viewClass])) {
+        if (isset($this->views[$viewClass])) {
             unset($this->views[$viewClass]);
         }
     }
@@ -32,5 +32,12 @@ class InMemoryProjectionStorage implements ProjectionStorageInterface
     public function prepare(string $viewClass): void
     {
         $this->views[$viewClass] = [];
+    }
+
+    public function delete(string $viewClass, string $viewId): void
+    {
+        if (isset($this->views[$viewClass][$viewId])) {
+            unset($this->views[$viewClass][$viewId]);
+        }
     }
 }

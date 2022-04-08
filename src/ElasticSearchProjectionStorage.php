@@ -4,12 +4,14 @@ namespace Tcieslar\EventProjection;
 
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Elasticsearch\Common\Exceptions\ClientErrorResponseException;
 
 class ElasticSearchProjectionStorage implements ProjectionStorageInterface
 {
@@ -96,7 +98,13 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
             'id' => $id
         ];
 
-        $response = $this->client->getSource($params);
+        try {
+            $response = $this->client->getSource($params);
+        } catch (Missing404Exception $exception) {
+            $this->logger->debug('Elastic Search - not found ' . $indexName . ', id ' . $id);
+            return null;
+        }
+
         $this->logger->debug('Elastic Search - get from ' . $indexName . ', id ' . $id);
 
         return $this->serializer->denormalize(
@@ -150,7 +158,7 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         ];
     }
 
-    public function delete(string $viewClass): void
+    public function deleteAll(string $viewClass): void
     {
         $indexName = $this->getIndexName($viewClass);
         $indexParams['index'] = $indexName;
@@ -164,6 +172,24 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         $this->client->indices()->delete($deleteParams);
 
         $this->logger->debug('Elastic Search - delete from ' . $indexName);
+    }
+
+    public function delete(string $viewClass, string $viewId): void
+    {
+        $indexName = $this->getIndexName($viewClass);
+        try {
+            $response = $this->client->delete([
+                'index' => $indexName,
+                'id' => $viewId
+            ]);
+        } catch (ClientErrorResponseException $e) {
+            if ($e->getCode() === 404) {
+                // the document does not exist
+            }
+        }
+        //if ($response['acknowledge'] === 1) {
+        //    // the document has been delete
+        //}
     }
 
     private function getIndexName(string $viewClass): string|array|null|false
