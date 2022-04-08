@@ -171,25 +171,18 @@ class ElasticSearchProjectionStorage implements ProjectionStorageInterface
         ];
         $this->client->indices()->delete($deleteParams);
 
-        $this->logger->debug('Elastic Search - delete from ' . $indexName);
+        $this->logger->debug('Elastic Search - delete all from ' . $indexName);
     }
 
     public function delete(string $viewClass, string $viewId): void
     {
         $indexName = $this->getIndexName($viewClass);
-        try {
-            $response = $this->client->delete([
-                'index' => $indexName,
-                'id' => $viewId
-            ]);
-        } catch (ClientErrorResponseException $e) {
-            if ($e->getCode() === 404) {
-                // the document does not exist
-            }
-        }
-        //if ($response['acknowledge'] === 1) {
-        //    // the document has been delete
-        //}
+        $response = $this->client->delete([
+            'index' => $indexName,
+            'id' => $viewId
+        ]);
+
+        $this->logger->debug('Elastic Search - delete from ' . $indexName);
     }
 
     private function getIndexName(string $viewClass): string|array|null|false
